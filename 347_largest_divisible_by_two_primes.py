@@ -17,6 +17,7 @@ def all_prime(n):
     return primes
 '''
 
+# get the list of all the primes that smaller than n
 def all_prime(n):
     primes = [0] * (n+1)
     primes[2] = 1
@@ -44,32 +45,31 @@ def all_prime(n):
 
 
 def largest_divisible(p, q, n) :
-    num = p * q
+    num = p * q  # the answer must contain both p and q
     if num > n:
         return 0
     elif num == n:
         return n
 
-    if n % p == 0 and n % q == 0:
-        return n
+    goal = n // num  # what we want is to approach the "goal" as much as possible
 
-    goal = n // num
-
+    # if q >= sqrt(n), then n contains q just once
     if (q >= math.sqrt(n)):
         temp = int(math.log(goal, p))
 
         return num * (p ** temp)
 
-    temp = 1
-    diff_min = goal
+    diff_min = goal  # minimize the diff and approach the goal
     result = 1
 
     for i in range(int(math.log(goal, p)) + 1):
-        temp = p ** i
+        temp_p = p ** i
 
         for j in range(int(math.log(goal, q)) + 1):
-            temp *= q ** j
-            if temp * p < goal:
+            temp_q = q ** j
+            temp = temp_p * temp_q
+
+            if temp * p < goal:  # too small
                 continue
 
             if temp > goal:
@@ -88,15 +88,15 @@ def main():
     n = int(input("please input a number:"))
     result = 0
 
-    primes = all_prime(n)
+    primes = all_prime(n // 2)  # get the list of all the primes not larger than n // 2
 
+    # p is the smaller prime, so it shoule be smaller than sqrt(n)
     for p in primes:
         if p > math.sqrt(n):
             break
 
         for q in primes:
-            if q > p:
-                #break
+            if q > p:  # q is the larger prime
                 result += largest_divisible(p, q, n)
 
     print(result)
